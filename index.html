@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Warframe小破群抽奖工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">      
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/main.css" /> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class="main">
+      <div class="modal fade" id="drawModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title draw-title" id="modalLabel">获奖的大佬是————————</h5>
+            </div>
+            <div class="modal-body">
+              <h2 class="winner-name-text"></h2>
+              <p style="text-align:center;">恭喜！奖品为：</p>
+              <h4 class="prize-name-text"></h4>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <h1 style="text-align:center;">抽奖小工具</h1>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="panel panel-default">
+              <div class="panel-heading">
+                <h2 class="panel-title">选择奖品</h2>
+                <button class="btn btn-default" id="showlist">展示奖品列表</button>
+                <div class="list-group prizelist">
+                </div>
+                <button class="btn btn-primary" id="draw">抽tm的！</button>
+                <!-- <button class="btn btn-primary" id="test">TEST</button> --> 
+              </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h2 class="panel-title">名单</h2>
+              <button class="btn btn-default" id="participantslist">展示参与者列表</button>
+              <div class="list-group namelist">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h2 class="panel-title">抽奖结果公示栏</h2>
+                  <div class="draw-result-table">
+                  </div>
+                </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $(document).ready(function() {
+      var prizeArray = [
+        '成长之力【提供：老猫】',
+        '莲花狙击特昂（一套）【提供：老猫】',
+        '莲花凯旋将军（一套）【提供：xiaota】',
+        '保温服（一组）【提供：Sean】',
+        '福马包（3个福马）【提供：Zio】',
+        '福马包（3个福马）【提供：Zio】',
+        '福马包（3个福马）【提供：Zio】',
+        '致残突击 【提供：Sean】',
+        '翅膀P（一套）【提供：manman】',
+        '搬运者P（一套）【提供：xiaota】',
+        '搬运者P（一套）【提供：shang】',
+        '照相机P（一套）【提供：Zerry】',
+        '狗圈P（一套）【提供：老猫】',
+        '狗圈P（一套）【提供：shang】',
+        '扫荡锯齿【提供：shang】',
+        'T4A2或R1核桃 【提供：shang】',
+        '创口溃烂 【提供：Zerry】',
+        '卡拉克亡魂（一套）【提供：NO.DOC】',
+        '七天任意加成 【提供：Zio】',
+        '女汉子P（一套）【提供：奸商p】',
+        '音妈P（一套）【提供：manman】',
+        '毒妈P（一套）【提供：manman】',
+        '席巴p（一套）【提供：奸商p】',
+        '华丽外观一个 【提供：Sean】',
+        '剑风P（8级）【提供：chuan】',
+        '守望者P（一套）【提供：NO.DOC】',
+        '悦音P（一套）【提供：奸商p】',
+        '锤子P（一套）【提供：奸商p】',
+        '双短柄战镰（一套）【提供：manman】',
+        '持久P（0级）【提供：Zerry】',
+        '棱晶空刃 【提供：shang】',
+        'Rhino Prime总图【提供：shang】',
+        '未开手枪紫卡 【提供：老猫】',
+        '未开手枪紫卡 【提供：老猫】',
+        'Rhino Prime（一套）【提供：xiaota】',
+        '川流p（满级）【提供：chuan】',
+        '持久p（满级）【提供：chuan】',
+        '指挥官附能魔导活力（一套）【提供：老猫】',
+        '天国的雷筒p【提供：奸商p】',
+        '一口毒奶【提供：Zio】'
+      ];
+
+      var participantsArray = [
+        '川yizhichuan',
+        '艹水獭的新一代次元侠 NO.DOC',
+        '欧罗巴之皇—水獭！',
+        '铲屎老猫 我是一只可爱小猫咪喵喵喵',
+        'manmandewan （已经凉透了的慢慢）',
+        'shangchew',
+        '优雅与卓越的化身Baro_KiTeer_Prime',
+        'ZioYang是毒奶背锅侠',
+        'SeanPP66 天真善良活泼可爱的骚王',
+        'Zerry6666',
+        'Kazeecho',
+        'faahfjk'
+      ];
+
+      var results = {};
+
+      // var numberPool = {
+      //   '0': 0,
+      //   '1': 0,
+      //   '2': 0,
+      //   '3': 0,
+      //   '4': 0,
+      //   '5': 0,
+      //   '6': 0,
+      //   '7': 0,
+      //   '8': 0,
+      //   '9': 0,
+      //   '10': 0,
+      //   '11': 0,
+      // }; // For testing
+      
+      $('#showlist').on('click', function() {
+        var prizelist = $('.prizelist');
+        var newitem;
+        for(var i = 0; i < prizeArray.length; i++) {
+          newitem = $('<button type="button" class="list-group-item prize-list-item" />');
+          newitem.text(prizeArray[i]);
+          newitem.on('click', function() {
+            var item = this;
+            var previousItems = document.getElementsByClassName('prize-list-item active');
+            for(var i = 0; i < previousItems.length; i++) {
+              previousItems[0].classList.remove('active');
+            }
+
+            item.classList.add('active');
+          });
+          prizelist.append(newitem);
+        }       
+      });
+
+      $('#participantslist').on('click', function() {
+        var namelist = $('.namelist');
+        var newitem;
+        for(var i = 0; i < participantsArray.length; i++) {
+          newitem = $('<button type="button" class="list-group-item name-list-item" />');
+          newitem.text(participantsArray[i]);
+          namelist.append(newitem);
+        }       
+      });
+
+      $('#draw').on('click', function() {
+        var currentPrize = document.getElementsByClassName('prize-list-item active');
+        var prizeName = currentPrize[0].textContent;
+        var output = randomIt();
+        output = output.toString();
+        var winner = participantsArray[output];
+        indicateWinner(prizeName, winner);
+        addToResultTable(prizeName, output, winner);
+        var item = document.getElementsByClassName('prize-list-item active');
+        item[0].remove();
+        $('#drawModal').modal('show');
+        // numberPool[output]++; // For testing
+      });
+
+      $('#test').on('click', function() {
+        console.log(numberPool);
+      });
+
+      function randomIt() {
+        var pplNumber = participantsArray.length;
+        var random1 = new Date() - 0;
+        var random2 = Math.floor(Math.random() * pplNumber * 100 + 1);
+        var finalRandom = (random1 + random2)%pplNumber;
+        return finalRandom;
+      }
+
+      function indicateWinner(prize, winner) {
+        $('.winner-name-text').text(winner);
+        $('.prize-name-text').text(prize);
+      }
+
+      function addToResultTable(prize, output, winner) {
+        var resultPanel = document.getElementsByClassName('draw-result-table');
+        var keys = Object.keys(results);
+        var found = false;
+        if (keys.length > 0) {
+          var winnerid;
+          for(var i = 0; i < keys.length; i++) {
+            if (winner === keys[i]) {
+              results[keys[i]].push(prize);
+              panelBodyId = '#body-' + output;
+              $(panelBodyId).append($('<li class="prize-result-item">' + prize + '</li>'));
+              found = true;
+            }
+          }
+        }
+
+        if (found === false) {
+          results[winner] = [prize];
+          var header = $('<div class="panel-heading"><h3 class="panel-title" id="winner-'+ output +'">' + winner + '</h3></div>');
+          var prizeItem = $('<div class="panel-body" id="body-' + output + '"></div>');
+          prizeItem.append($('<li class="prize-result-item">' + prize + '</li>'))
+          header.append(prizeItem);
+          $('.draw-result-table').append(header);
+        }
+      }
+    });
+
+
+  </script>
+</body>
+
+</html>>
