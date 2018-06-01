@@ -37,7 +37,7 @@
           <div class="panel panel-default">
               <div class="panel-heading">
                 <h2 class="panel-title">选择奖品</h2>
-                <button class="btn btn-default" id="showlist">展示奖品列表</button>
+                <!-- <button class="btn btn-default" id="showlist">展示奖品列表</button> -->
                 <div class="list-group prizelist">
                 </div>
                 <button class="btn btn-primary" id="draw">抽tm的！</button>
@@ -49,7 +49,7 @@
           <div class="panel panel-default">
             <div class="panel-heading">
               <h2 class="panel-title">名单</h2>
-              <button class="btn btn-default" id="participantslist">展示参与者列表</button>
+              <!-- <button class="btn btn-default" id="participantslist">展示参与者列表</button> -->
               <div class="list-group namelist">
               </div>
             </div>
@@ -74,119 +74,56 @@
   </div>
   <script>
     $(document).ready(function() {
-      var prizeArray = [
-        '成长之力【提供：老猫】',
-        '活动冰火毒（各一张）【提供：Alex】',
-        '莲花狙击特昂（一套）【提供：老猫】',
-        '莲花凯旋将军（一套）【提供：xiaota】',
-        '保温服（一组）【提供：Sean】',
-        '希芙（一套）【提供：包青天】',
-        '福马包（3个福马）【提供：Zio】',
-        '福马包（3个福马）【提供：Zio】',
-        '福马包（3个福马）【提供：Zio】',
-        '致残突击 【提供：Sean】',
-        '翅膀P（一套）【提供：manman】',
-        '搬运者P（一套）【提供：xiaota】',
-        '搬运者P（一套）【提供：shang】',
-        '照相机P（一套）【提供：Zerry】',
-        '照相机P（一套）【提供：Alex】',
-        '狗圈P（一套）【提供：老猫】',
-        '狗圈P（一套）【提供：shang】',
-        '扫荡锯齿【提供：shang】',
-        'T4A2或R1核桃 【提供：shang】',
-        '创口溃烂 【提供：Zerry】',
-        '卡拉克亡魂（一套）【提供：NO.DOC】',
-        '守望者P（一套）【提供：faahfjk】',
-        '七天任意加成 【提供：Zio】',
-        '七天任意加成 【提供：Alex】',
-        '女汉子P（一套）【提供：奸商p】',
-        '水男P（一套）【提供：Alex】',
-        '音妈P（一套）【提供：manman】',
-        '毒妈P（一套）【提供：manman】',
-        '席巴p（一套）【提供：奸商p】',
-        '华丽外观一个 【提供：Sean】',
-        '剑风P（8级）【提供：chuan】',
-        '守望者P（一套）【提供：NO.DOC】',
-        '悦音P（一套）【提供：奸商p】',
-        '锤子P（一套）【提供：奸商p】',
-        '双短柄战镰（一套）【提供：manman】',
-        '持久P（0级）【提供：Zerry】',
-        '棱晶空刃 【提供：shang】',
-        'Rhino Prime总图【提供：shang】',
-        '未开手枪紫卡 【提供：老猫】',
-        '未开手枪紫卡 【提供：老猫】',
-        'Rhino Prime（一套）【提供：xiaota】',
-        '川流p（满级）【提供：chuan】',
-        '持久p（满级）【提供：chuan】',
-        '指挥官附能魔导活力（一套）【提供：老猫】',
-        '保温杯（物理意义上）【提供：Legaomi】',
-        '天国的雷筒p【提供：奸商p】',
-        '一口毒奶【提供：Zio】'
-      ];
+      var prizeArray = [];
+      $.ajax({
+        url: 'prize.txt',
+        async: false,
+        type: 'GET',
+      }).done((data) => {
+        if (data) {
+          var prizelists = data.split('\n');
+          prizeArray = prizelists.slice();
+        }
+      });
 
-      var participantsArray = [
-        '川yizhichuan',
-        '艹水獭的新一代次元侠 NO.DOC',
-        '欧罗巴之皇—水獭！',
-        '铲屎老猫 我是一只可爱小猫咪喵喵喵',
-        'manmandewan （已经凉透了的慢慢）',
-        'shangchew',
-        '优雅与卓越的化身Baro_KiTeer_Prime',
-        'ZioYang是毒奶背锅侠',
-        'SeanPP66 天真善良活泼可爱的骚王',
-        'Zerry6666',
-        'Kazeecho',
-        'faahfjk',
-        'Alex785867410',
-        '包青天axero123',
-        '从来不水经验升段的Legaomi'
-      ];
+      var participantsArray = [];
+      $.ajax({
+        url: 'participants.txt',
+        async: false,
+        type: 'GET',
+      }).done((data) => {
+        if (data) {
+          var lists = data.replace(/\r/g, '').split('\n');
+          participantsArray = lists.slice();
+        }
+      });
 
       var results = {};
-
-      // var numberPool = {
-      //   '0': 0,
-      //   '1': 0,
-      //   '2': 0,
-      //   '3': 0,
-      //   '4': 0,
-      //   '5': 0,
-      //   '6': 0,
-      //   '7': 0,
-      //   '8': 0,
-      //   '9': 0,
-      //   '10': 0,
-      //   '11': 0,
-      // }; // For testing
       
-      $('#showlist').on('click', function() {
-        var prizelist = $('.prizelist');
-        var newitem;
-        for(var i = 0; i < prizeArray.length; i++) {
-          newitem = $('<button type="button" class="list-group-item prize-list-item" />');
-          newitem.text(prizeArray[i]);
-          newitem.on('click', function() {
-            var item = this;
-            var previousItems = document.getElementsByClassName('prize-list-item active');
-            for(var i = 0; i < previousItems.length; i++) {
-              previousItems[0].classList.remove('active');
-            }
+      var prizelist = $('.prizelist');
+      var newitem;
+      for(var i = 0; i < prizeArray.length; i++) {
+        newitem = $('<button type="button" class="list-group-item prize-list-item" />');
+        newitem.text(prizeArray[i]);
+        newitem.on('click', function() {
+          var item = this;
+          var previousItems = document.getElementsByClassName('prize-list-item active');
+          for(var i = 0; i < previousItems.length; i++) {
+            previousItems[0].classList.remove('active');
+          }
 
-            item.classList.add('active');
-          });
-          prizelist.append(newitem);
-        }       
-      });
+          item.classList.add('active');
+        });
+        prizelist.append(newitem);
+      }       
 
-      $('#participantslist').on('click', function() {
-        var namelist = $('.namelist');
-        var newitem;
-        for(var i = 0; i < participantsArray.length; i++) {
-          newitem = $('<button type="button" class="list-group-item name-list-item" />');
-          newitem.text(participantsArray[i]);
-          namelist.append(newitem);
-        }       
-      });
+      var namelist = $('.namelist');
+      var newitem;
+      for(var i = 0; i < participantsArray.length; i++) {
+        newitem = $('<button type="button" class="list-group-item name-list-item" />');
+        newitem.text(participantsArray[i]);
+        namelist.append(newitem);
+      }       
 
       $('#draw').on('click', function() {
         var currentPrize = document.getElementsByClassName('prize-list-item active');
